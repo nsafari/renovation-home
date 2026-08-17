@@ -1,0 +1,67 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: tools platform-tools platforms;android-36 build-tools;34.0.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app for Capacitor
+        run: npm run build:capacitor
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rebuild-manager-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Create Release with APK
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ReBuild Manager ${{ github.ref_name }}
+          body: |
+            Android APK built from commit ${{ github.sha }}
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          overwrite_files: true
+          draft: false
