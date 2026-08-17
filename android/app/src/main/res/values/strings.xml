@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ReBuild Manager</string>
+    <string name="title_activity_main">ReBuild Manager</string>
+    <string name="package_name">net.rebuild.manager</string>
+    <string name="custom_url_scheme">net.rebuild.manager</string>
+</resources>
