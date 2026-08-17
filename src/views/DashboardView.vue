@@ -23,23 +23,26 @@ const recentProjects = computed(() => {
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div>
-      <h1 class="text-2xl font-bold text-stone-800">🏠 Dashboard</h1>
-      <p class="text-sm text-stone-500">Welcome back! Here's your renovation overview.</p>
+    <div class="animate-fade-in-up">
+      <h1 class="font-heading text-2xl font-bold text-slate-900">Dashboard</h1>
+      <p class="mt-1 text-sm text-slate-500">Welcome back! Here's your renovation overview.</p>
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div class="stagger-children grid grid-cols-2 gap-4 md:grid-cols-4">
       <StatsCard icon="🔨" label="Total Projects" :value="store.totalProjects" color="text-amber-700" />
       <StatsCard icon="🚧" label="Active Projects" :value="store.activeProjects" color="text-blue-700" />
-      <StatsCard icon="✅" label="Completed Tasks" :value="`${store.completedTasks}/${store.totalTasks}`" color="text-green-700" />
-      <StatsCard icon="⚠️" label="Overdue Tasks" :value="store.overdueTasks" :color="store.overdueTasks > 0 ? 'text-red-600' : 'text-green-600'" />
+      <StatsCard icon="✅" label="Completed Tasks" :value="`${store.completedTasks}/${store.totalTasks}`" color="text-emerald-700" />
+      <StatsCard icon="⚠️" label="Overdue Tasks" :value="store.overdueTasks" :color="store.overdueTasks > 0 ? 'text-rose-600' : 'text-emerald-600'" />
     </div>
 
     <!-- Overall Progress -->
-    <div class="rounded-xl border border-amber-200 bg-white p-5 shadow-sm">
-      <h3 class="mb-3 text-sm font-bold text-stone-700">📊 Overall Progress</h3>
-      <ProgressBar :percentage="totalProgress" height="h-4" show-label />
+    <div class="animate-fade-in-up rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex items-center justify-between">
+        <h3 class="font-heading text-sm font-semibold text-slate-700">Overall Progress</h3>
+        <span class="font-heading text-sm font-bold text-amber-600">{{ totalProgress }}%</span>
+      </div>
+      <ProgressBar :percentage="totalProgress" height="h-4" />
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
@@ -47,27 +50,29 @@ const recentProjects = computed(() => {
       <TomorrowTasks />
 
       <!-- Recent Projects -->
-      <div class="rounded-xl border border-amber-200 bg-white p-5 shadow-sm">
+      <div class="animate-fade-in-up rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-bold text-stone-800">🔨 Recent Projects</h3>
-          <router-link to="/projects" class="text-sm font-medium text-amber-600 hover:text-amber-700">
+          <h3 class="font-heading text-lg font-semibold text-slate-900">Recent Projects</h3>
+          <router-link to="/projects" class="text-sm font-medium text-amber-600 transition-colors hover:text-amber-700">
             View All →
           </router-link>
         </div>
-        <div v-if="recentProjects.length === 0" class="py-4 text-center text-sm text-stone-400">
+        <div v-if="recentProjects.length === 0" class="py-4 text-center text-sm text-slate-400">
           No projects yet. Create one to get started!
         </div>
-        <ul v-else class="space-y-3">
+        <ul v-else class="stagger-children space-y-3">
           <li v-for="project in recentProjects" :key="project.id">
             <router-link
               :to="`/projects/${project.id}`"
-              class="block rounded-lg border border-stone-200 p-3 transition-all hover:border-amber-300 hover:shadow-sm"
+              class="block rounded-lg border border-slate-200 p-3 transition-all duration-200 hover:border-amber-300 hover:shadow-sm"
             >
-              <div class="flex items-center justify-between">
-                <h4 class="text-sm font-semibold text-stone-800">{{ project.name }}</h4>
-                <span class="text-xs text-stone-400">{{ store.getProgress(project.id).percentage }}%</span>
+              <div class="mb-2 flex items-center justify-between">
+                <h4 class="truncate text-sm font-semibold text-slate-800">{{ project.name }}</h4>
+                <span class="ml-2 shrink-0 font-heading text-xs font-bold text-amber-600">
+                  {{ store.getProgress(project.id).percentage }}%
+                </span>
               </div>
-              <ProgressBar :percentage="store.getProgress(project.id).percentage" class="mt-2" />
+              <ProgressBar :percentage="store.getProgress(project.id).percentage" />
             </router-link>
           </li>
         </ul>

@@ -11,10 +11,10 @@ const route = useRoute()
 const ui = useUiStore()
 
 const navItems = [
-  { to: '/', icon: '📊', label: 'Dashboard' },
-  { to: '/projects', icon: '🔨', label: 'Projects' },
-  { to: '/schedule', icon: '📅', label: 'Schedule' },
-  { to: '/reports', icon: '📈', label: 'Reports' },
+  { path: '/', label: 'Dashboard', icon: '📊' },
+  { path: '/projects', label: 'Projects', icon: '🏠' },
+  { path: '/schedule', label: 'Schedule', icon: '📅' },
+  { path: '/reports', label: 'Reports', icon: '📈' },
 ]
 
 const isActive = (path: string) => {
@@ -26,45 +26,54 @@ const isActive = (path: string) => {
 <template>
   <aside
     :class="[
-      'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-amber-200 bg-gradient-to-b from-amber-900 to-stone-900 text-white transition-transform duration-300',
+      'fixed inset-y-0 left-0 z-40 flex w-[260px] flex-col bg-[#1e293b] transition-transform duration-300 ease-in-out',
       mobileOpen ? 'translate-x-0' : '-translate-x-full',
-      'lg:relative lg:translate-x-0',
-      open ? 'lg:w-64' : 'lg:w-0 lg:overflow-hidden lg:border-0',
+      open ? 'lg:translate-x-0' : 'lg:-translate-x-full',
     ]"
   >
     <!-- Logo -->
-    <div class="flex h-16 items-center gap-3 border-b border-amber-700/50 px-6">
-      <span class="text-3xl">🏗️</span>
-      <div>
-        <h2 class="font-bold text-amber-100">ReBuild</h2>
-        <p class="text-xs text-amber-300">Manager v1.0</p>
+    <div class="border-b border-slate-700/50 p-6">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500 shadow-lg shadow-amber-500/20">
+          <span class="text-xl">🔨</span>
+        </div>
+        <div>
+          <h1 class="font-heading text-lg font-bold tracking-tight text-white">ReBuild</h1>
+          <p class="text-xs font-medium text-slate-400">Manager</p>
+        </div>
       </div>
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto px-3 py-4">
-      <ul class="space-y-1">
-        <li v-for="item in navItems" :key="item.to">
-          <router-link
-            :to="item.to"
-            :class="[
-              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-              isActive(item.to)
-                ? 'bg-amber-700/50 text-amber-100'
-                : 'text-amber-200 hover:bg-amber-800/50 hover:text-white',
-            ]"
-            @click="ui.closeMobileSidebar"
-          >
-            <span class="text-lg">{{ item.icon }}</span>
-            {{ item.label }}
-          </router-link>
-        </li>
-      </ul>
+    <nav class="flex-1 space-y-1 overflow-y-auto p-4">
+      <router-link
+        v-for="item in navItems"
+        :key="item.path"
+        :to="item.path"
+        class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200"
+        :class="[
+          isActive(item.path)
+            ? '-ml-[2px] border-l-2 border-amber-400 bg-amber-500/10 text-amber-400'
+            : 'text-slate-400 hover:bg-slate-800 hover:text-white',
+        ]"
+        @click="ui.closeMobileSidebar"
+      >
+        <span class="text-lg">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </router-link>
     </nav>
 
     <!-- Footer -->
-    <div class="border-t border-amber-700/50 px-6 py-4 text-xs text-amber-400">
-      <p>Build your dream home</p>
+    <div class="border-t border-slate-700/50 p-4">
+      <div class="flex items-center gap-3 px-4 py-2">
+        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700">
+          <span class="text-sm">👤</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-white">User</p>
+          <p class="text-xs text-slate-400">Builder</p>
+        </div>
+      </div>
     </div>
   </aside>
 </template>
